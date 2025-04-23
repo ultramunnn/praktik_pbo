@@ -65,9 +65,9 @@ class JenisMember{
         if (jenis.equalsIgnoreCase("Member")){
             HargaBeli = p.getPotonganHarga(harga_jual, potongan);
         } else if (jenis.equalsIgnoreCase("Member Gold")){
-            HargaBeli = p.getPotonganHarga(harga_jual, potongan);
+            HargaBeli = pg.getPotonganHarga(harga_jual, potongan);
         } else if (jenis.equalsIgnoreCase("Member Platinum")){
-            HargaBeli = p.getPotonganHarga(harga_jual, potongan);
+            HargaBeli = pm.getPotonganHarga(harga_jual, potongan);
         } else {
             HargaBeli = p.getPotonganHarga(harga_jual);
         } 
