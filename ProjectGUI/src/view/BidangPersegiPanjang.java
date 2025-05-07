@@ -14,20 +14,32 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import model.PersegiPanjang;
+import java.sql.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+
 public class BidangPersegiPanjang extends javax.swing.JFrame {
 
     DefaultComboBoxModel <String> mdl = new DefaultComboBoxModel <> ();
     
     int baris = 0;
-    static Object kolom[] = {"Panjang", "Lebar", "Jenis", "Hasil" };
+    static Object kolom[] = {"ID","Panjang", "Lebar", "Jenis", "Hasil" };
     DefaultTableModel tbl = new DefaultTableModel(kolom, baris);
     
-    public BidangPersegiPanjang() {
+    public BidangPersegiPanjang() throws Exception {
         initComponents();
         TNama.setEditable(false);
+        TID.setEditable(false);
         mdl.addElement("Keliling");
         mdl.addElement("Luas");
         CHitung.setModel(mdl);
+        
+        PersegiPanjang objpp= new PersegiPanjang();
+        String [][] data = objpp.getAllDataPersegiPanjang();
+        for(int i=0; i<data.length; i++){
+            tbl.addRow(new Object[]{data[i][0],data[i][1],data[i][2],data[i][3],data[i][4]});
+        }
         TabelPersegiPanjang.setModel(tbl);
     }
 
@@ -55,9 +67,16 @@ public class BidangPersegiPanjang extends javax.swing.JFrame {
         TPanjang = new javax.swing.JTextField();
         TLebar = new javax.swing.JTextField();
         CHitung = new javax.swing.JComboBox<>();
-        BProses = new javax.swing.JButton();
+        BTambah = new javax.swing.JButton();
         jScrollPane3 = new javax.swing.JScrollPane();
         TabelPersegiPanjang = new javax.swing.JTable();
+        BUpdate = new javax.swing.JButton();
+        TCari = new javax.swing.JTextField();
+        BCari = new javax.swing.JButton();
+        BEdit = new javax.swing.JButton();
+        BDelete = new javax.swing.JButton();
+        jLabel6 = new javax.swing.JLabel();
+        TID = new javax.swing.JTextField();
 
         jScrollPane1.setViewportView(jEditorPane1);
 
@@ -106,10 +125,16 @@ public class BidangPersegiPanjang extends javax.swing.JFrame {
             }
         });
 
-        BProses.setText("Proses");
-        BProses.addActionListener(new java.awt.event.ActionListener() {
+        TLebar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                BProsesActionPerformed(evt);
+                TLebarActionPerformed(evt);
+            }
+        });
+
+        BTambah.setText("Tambah");
+        BTambah.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BTambahActionPerformed(evt);
             }
         });
 
@@ -128,38 +153,92 @@ public class BidangPersegiPanjang extends javax.swing.JFrame {
         TabelPersegiPanjang.setAutoscrolls(false);
         jScrollPane3.setViewportView(TabelPersegiPanjang);
 
+        BUpdate.setText("Update");
+        BUpdate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BUpdateActionPerformed(evt);
+            }
+        });
+
+        TCari.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                TCariActionPerformed(evt);
+            }
+        });
+
+        BCari.setText("Cari");
+        BCari.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BCariActionPerformed(evt);
+            }
+        });
+
+        BEdit.setText("Edit");
+        BEdit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BEditActionPerformed(evt);
+            }
+        });
+
+        BDelete.setText("Delete");
+        BDelete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BDeleteActionPerformed(evt);
+            }
+        });
+
+        jLabel6.setText("ID");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(128, 128, 128)
-                .addComponent(jLabel1)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(layout.createSequentialGroup()
-                .addGap(26, 26, 26)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 508, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
+                        .addGap(128, 128, 128)
+                        .addComponent(jLabel1))
                     .addGroup(layout.createSequentialGroup()
+                        .addGap(15, 15, 15)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel2)
-                            .addComponent(jLabel3)
+                            .addComponent(TCari, javax.swing.GroupLayout.PREFERRED_SIZE, 223, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 508, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(BUpdate)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(BTambah)
+                        .addGap(132, 132, 132))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(BEdit)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(BDelete)
+                        .addGap(50, 50, 50))))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(22, 22, 22)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(BCari)
+                        .addGap(106, 106, 106))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel5)
                             .addComponent(jLabel4)
-                            .addComponent(jLabel5))
-                        .addGap(58, 58, 58)
+                            .addComponent(jLabel3)
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel6))
+                        .addGap(62, 62, 62)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(BProses)
-                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(TNama)
-                                    .addComponent(TPanjang)
-                                    .addComponent(TLebar)
-                                    .addComponent(CHitung, 0, 261, Short.MAX_VALUE))
-                                .addGap(138, 138, 138))))))
+                            .addComponent(TLebar)
+                            .addComponent(TNama)
+                            .addComponent(TPanjang)
+                            .addComponent(CHitung, 0, 255, Short.MAX_VALUE)
+                            .addComponent(TID))))
+                .addGap(138, 138, 138))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -170,23 +249,37 @@ public class BidangPersegiPanjang extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(TNama, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(TPanjang, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel4)
-                    .addComponent(TLebar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 22, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel5)
-                    .addComponent(CHitung, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(38, 38, 38)
-                .addComponent(BProses)
+                    .addComponent(jLabel6)
+                    .addComponent(TID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(TPanjang, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel3))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(TLebar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel4))
+                .addGap(22, 22, 22)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(CHitung, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel5))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(BUpdate)
+                    .addComponent(BTambah))
+                .addGap(32, 32, 32)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(TCari, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(BCari))
+                .addGap(34, 34, 34)
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(31, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(BEdit)
+                    .addComponent(BDelete))
+                .addGap(12, 12, 12))
         );
 
         pack();
@@ -197,7 +290,7 @@ public class BidangPersegiPanjang extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_TNamaActionPerformed
 
-    private void BProsesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BProsesActionPerformed
+    private void BTambahActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTambahActionPerformed
       String Nama, Panjang, Lebar, PilihJenis, Hasil;
       int p,l,K,L,H;
       
@@ -224,12 +317,129 @@ public class BidangPersegiPanjang extends javax.swing.JFrame {
           H = objpp.getLuas();
       }
       
-      Hasil = Integer.toString(H);
-      tbl.addRow(new Object[]{Panjang, Lebar, PilihJenis, Hasil});
-      TabelPersegiPanjang.setModel(tbl);
+        try {
+          Hasil = Integer.toString(H);
+          int id = objpp.TambahDataPersegiPanjang(p, l, PilihJenis, H);
+          String ID = Integer.toString(id);
+          String[][] data = objpp.getAllDataPersegiPanjang();
+          
+         tbl.setRowCount(0);
+         
+         for (int i = 0; i < data.length; i++) {
+                tbl.addRow(new Object[]{data[i][0], data[i][1], data[i][2], data[i][3], data[i][4]});
+            }
+          TabelPersegiPanjang.setModel(tbl);
+      } catch (SQLException ex) {
+          ex.printStackTrace();
+          JOptionPane.showMessageDialog(this, "Gagal menyimpan data ke database: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+      } catch (Exception ex) {
+            Logger.getLogger(BidangPersegiPanjang.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
       
-      
-    }//GEN-LAST:event_BProsesActionPerformed
+    }//GEN-LAST:event_BTambahActionPerformed
+
+    private void BUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BUpdateActionPerformed
+        String Nama, ID, Panjang, Lebar, PilihJenis, Hasil;
+        int id, p,l,K,H;
+        PersegiPanjang objpp = new PersegiPanjang();
+        Nama = TNama.getText();
+        ID = TID.getText();
+        Panjang = TPanjang.getText();
+        Lebar = TLebar.getText();
+        PilihJenis = CHitung.getSelectedItem().toString();
+        
+        if(Panjang.isEmpty()){
+            JOptionPane.showMessageDialog(this, "Nilai panjang harus diisi");
+            
+        }else if(Lebar.isEmpty()){
+            JOptionPane.showMessageDialog(this, "Nilai lebar harus diisi");
+        } else{
+            try {
+                p = Integer.parseInt(Panjang);
+                l = Integer.parseInt(Lebar);
+                objpp.setPersegiPanjang(p,l);
+                if(PilihJenis.equalsIgnoreCase("Keliling")){
+                    H = objpp.getKeliling();
+                } else {
+                    H = objpp.getLuas();
+                }
+                
+                id = Integer.parseInt(ID);
+                
+                //update database
+                objpp.UpdateDataPersersegiPanjang(id, p, l, PilihJenis, H);
+                tbl.getDataVector().removeAllElements();
+                
+                //get data tabel
+                
+                String [][] data = objpp.getAllDataPersegiPanjang();
+                for (int i=0; i<data.length; i++){
+                    tbl.addRow(new Object[]{data[i][0],data[i][1],data[i][2],data[i][3],data[i][4]});
+                }
+                
+                TabelPersegiPanjang.setModel(tbl);
+                
+                JOptionPane.showMessageDialog(this, "Data Berhasil Diedit",
+                        "Pesan Konfirmasi", JOptionPane.INFORMATION_MESSAGE);
+                TID.setEditable(true);
+                TPanjang.setText("");
+                TLebar.setText("");
+            } catch (Exception ex) {
+                Logger.getLogger(BidangPersegiPanjang.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+        }
+    }//GEN-LAST:event_BUpdateActionPerformed
+
+    private void TCariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TCariActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_TCariActionPerformed
+
+    private void TLebarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TLebarActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_TLebarActionPerformed
+
+    private void BEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BEditActionPerformed
+        //get no baris yang akan diubah datanya
+        int PilihBaris = TabelPersegiPanjang.getSelectedRow();
+        String ID = tbl.getValueAt(PilihBaris, 0).toString();
+        String Panjang = tbl.getValueAt(PilihBaris, 1).toString();
+        String Lebar = tbl.getValueAt(PilihBaris, 2).toString();
+        String Jenis = tbl.getValueAt(PilihBaris, 3).toString();
+        
+        //get data
+        TID.setText(ID);
+        TPanjang.setText(Panjang);
+        TLebar.setText(Lebar);
+        CHitung.setSelectedItem(Jenis);
+    }//GEN-LAST:event_BEditActionPerformed
+
+    private void BDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BDeleteActionPerformed
+        PersegiPanjang objpp = new PersegiPanjang();
+        
+        int PilihBaris =TabelPersegiPanjang.getSelectedRow();
+        String ID = tbl.getValueAt(PilihBaris, 0).toString();
+        int id = Integer.parseInt(ID);
+        
+        objpp.HapusPersegiPanjang(id);
+        tbl.removeRow(PilihBaris);
+        
+        JOptionPane.showMessageDialog(this, "Data Berhasil Dihapus",
+                "Pesan Konfirmasi", JOptionPane.INFORMATION_MESSAGE);
+    }//GEN-LAST:event_BDeleteActionPerformed
+
+    private void BCariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BCariActionPerformed
+        PersegiPanjang objpp = new PersegiPanjang();
+        
+        String kataKunci = TCari.getText();
+        tbl.getDataVector().removeAllElements();
+        
+        String [][] data = objpp.CariDataPersegiPanjang(kataKunci);
+        for (int i=0; i< data.length;i++){
+            tbl.addRow(new Object[]{data[i][0],data[i][1],data[i][2],data[i][3],data[i][4]});
+        }
+    }//GEN-LAST:event_BCariActionPerformed
 
     /**
      * @param args the command line arguments
@@ -261,14 +471,24 @@ public class BidangPersegiPanjang extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new BidangPersegiPanjang().setVisible(true);
+                try {
+                    new BidangPersegiPanjang().setVisible(true);
+                } catch (Exception ex) {
+                    Logger.getLogger(BidangPersegiPanjang.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton BProses;
+    private javax.swing.JButton BCari;
+    private javax.swing.JButton BDelete;
+    private javax.swing.JButton BEdit;
+    private javax.swing.JButton BTambah;
+    private javax.swing.JButton BUpdate;
     private javax.swing.JComboBox<String> CHitung;
+    private javax.swing.JTextField TCari;
+    private javax.swing.JTextField TID;
     private javax.swing.JTextField TLebar;
     private javax.swing.JTextField TNama;
     private javax.swing.JTextField TPanjang;
@@ -280,6 +500,7 @@ public class BidangPersegiPanjang extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JPopupMenu jPopupMenu1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;

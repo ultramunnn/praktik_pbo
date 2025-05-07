@@ -1,6 +1,8 @@
 package view;
 
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import view.BidangPersegiPanjang;
 import view.BidangLingkaran;
 
@@ -92,9 +94,13 @@ public class HitungBidang extends javax.swing.JFrame {
     }//GEN-LAST:event_MenuLingkaranMouseReleased
 
     private void MenuPersegiPanjangMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_MenuPersegiPanjangMouseReleased
-        BidangPersegiPanjang BP = new BidangPersegiPanjang ();
-        BP.setLocationRelativeTo(this);
-        BP.setVisible(true);
+        try {
+            BidangPersegiPanjang BP = new BidangPersegiPanjang ();
+            BP.setLocationRelativeTo(this);
+            BP.setVisible(true);
+        } catch (Exception ex) {
+            Logger.getLogger(HitungBidang.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_MenuPersegiPanjangMouseReleased
 
     /**
