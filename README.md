@@ -1,7 +1,7 @@
 # Pemrograman Berbasis Object dengan Java
 
 ## Deskripsi
-Repositori ini berisi implementasi dari konsep-konsep **Pemrograman Berbasis Object** (OOP) menggunakan bahasa pemrograman **Java**. Dalam proyek ini, kami mempelajari dan mengimplementasikan berbagai prinsip dasar OOP seperti **Method**, **Package Import Modifier**, **Inheritance**, **Encapsulation**, **Polymorphism**, **Abstract Class**, **Interface**, **Java GUI**, serta **Java GUI dengan MySQL** untuk pengelolaan basis data.
+Repositori ini berisi implementasi dari konsep-konsep Pemrograman Berbasis Object (OOP) dari mata kuliah **Pemograman Berbasis Object** di semester 2 menggunakan bahasa pemrograman **Java**. Dalam proyek ini, kami mempelajari dan mengimplementasikan berbagai prinsip dasar OOP seperti **Method**, **Package Import Modifier**, **Inheritance**, **Encapsulation**, **Polymorphism**, **Abstract Class**, **Interface**, **Java GUI**, serta **Java GUI dengan MySQL** untuk pengelolaan basis data.
 
 ## Konsep yang Diterapkan
 1. **Method**: Implementasi fungsi untuk mengatur logika pemrograman di dalam kelas.
